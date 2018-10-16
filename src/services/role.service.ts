@@ -19,20 +19,10 @@ class RoleService {
   private roleURL: string;
 
   private permissionsByScope: any = {
-    MANAGEMENT: {
-      permissions: ['INSTANCE', 'GROUP', 'TAG', 'TENANT', 'API', 'ROLE', 'APPLICATION', 'PLATFORM', 'AUDIT', 'NOTIFICATION', 'USER', 'MESSAGE', 'DICTIONARY'],
-      userRoleManagement: true
-    },
-    PORTAL: {
-      permissions: ['METADATA', 'DOCUMENTATION', 'APPLICATION', 'VIEW', 'TOP_APIS', "SETTINGS", "API_HEADER"],
-      userRoleManagement: true
-    },
-    API: {
-      permissions: ['DEFINITION', 'GATEWAY_DEFINITION', 'PLAN', 'SUBSCRIPTION', 'MEMBER', 'METADATA', 'ANALYTICS', 'EVENT', 'HEALTH', 'LOG', 'DOCUMENTATION', 'AUDIT', 'RATING', 'RATING_ANSWER', "DISCOVERY", "NOTIFICATION", "MESSAGE"]
-    },
-    APPLICATION: {
-      permissions: ['DEFINITION', 'MEMBER', 'ANALYTICS', 'LOG', 'SUBSCRIPTION', 'NOTIFICATION']
-    }
+    MANAGEMENT: ['INSTANCE', 'GROUP', 'TAG', 'TENANT', 'API', 'ROLE', 'APPLICATION', 'PLATFORM', 'AUDIT', 'NOTIFICATION', 'USER', 'MESSAGE', 'DICTIONARY', 'ALERT'],
+    PORTAL: ['METADATA', 'DOCUMENTATION', 'APPLICATION', 'VIEW', 'TOP_APIS', "SETTINGS", "API_HEADER"],
+    API: ['DEFINITION', 'GATEWAY_DEFINITION', 'PLAN', 'SUBSCRIPTION', 'MEMBER', 'METADATA', 'ANALYTICS', 'EVENT', 'HEALTH', 'LOG', 'DOCUMENTATION', 'AUDIT', 'RATING', 'RATING_ANSWER', "DISCOVERY", "NOTIFICATION", "MESSAGE", 'ALERT'],
+    APPLICATION: ['DEFINITION', 'MEMBER', 'ANALYTICS', 'LOG', 'SUBSCRIPTION', 'NOTIFICATION', 'ALERT']
   };
 
   constructor(private $http, Constants) {
@@ -49,11 +39,11 @@ class RoleService {
   }
 
   listPermissionsByScope(scope: string) {
-    return this.permissionsByScope[scope].permissions;
+    return this.permissionsByScope[scope];
   }
 
   isUserRoleManagement(scope: string) {
-    return this.permissionsByScope[scope].userRoleManagement;
+    return _.includes(['MANAGEMENT', 'PORTAL'], scope);
   }
 
   get(roleScope, roleName) {

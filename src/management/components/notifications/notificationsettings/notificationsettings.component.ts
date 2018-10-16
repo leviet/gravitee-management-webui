@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import _ = require('lodash');
-import {Hook} from '../../entities/hook';
-import {NotificationConfig} from '../../entities/notificationConfig';
-import NotificationSettingsService from '../../services/notificationSettings.service';
-import NotificationService from '../../services/notification.service';
-import {HookScope} from '../../entities/hookScope';
+import {Hook} from '../../../../entities/hook';
+import {NotificationConfig} from '../../../../entities/notificationConfig';
+import NotificationSettingsService from '../../../../services/notificationSettings.service';
+import NotificationService from '../../../../services/notification.service';
+import {Scope} from '../../../../entities/scope';
 import { StateService } from '@uirouter/core';
 
 const NotificationSettingsComponent: ng.IComponentOptions = {
@@ -26,8 +26,7 @@ const NotificationSettingsComponent: ng.IComponentOptions = {
     resolvedHookScope: '<',
     resolvedHooks: '<',
     resolvedNotifiers: '<',
-    resolvedNotificationSettings: '<',
-    resolvedApi: '<'
+    notificationSettings: '<'
   },
   template: require('./notificationsettings.html'),
   controller: function(
@@ -44,8 +43,6 @@ const NotificationSettingsComponent: ng.IComponentOptions = {
     vm.$onInit = () => {
       vm.hooksByCategory = _.groupBy(vm.resolvedHooks, 'category');
       vm.hooksCategories = _.keysIn(vm.hooksByCategory);
-      vm.notificationSettings = vm.resolvedNotificationSettings;
-      vm.api = vm.resolvedApi;
 
       vm.selectNotificationSetting(_.find(vm.notificationSettings, {id: $state.params.notificationId})
         || vm.notificationSettings[0]);
@@ -110,7 +107,7 @@ const NotificationSettingsComponent: ng.IComponentOptions = {
     vm.delete = () => {
       let alert = this.$mdDialog.confirm({
         title: 'Warning',
-        content: 'Are you sure you want to remove this notification ?',
+        content: 'Are you sure you want to remove this notification?',
         ok: 'OK',
         cancel: 'Cancel'
       });
@@ -143,13 +140,13 @@ const NotificationSettingsComponent: ng.IComponentOptions = {
         cfg.notifier = newConfig.notifierId;
         cfg.hooks = [];
         switch (vm.resolvedHookScope) {
-          case HookScope.APPLICATION:
+          case Scope.APPLICATION:
             cfg.referenceType = 'APPLICATION';
             break;
-          case HookScope.API:
+          case Scope.API:
             cfg.referenceType = 'API';
             break;
-          case HookScope.PORTAL:
+          case Scope.PORTAL:
             cfg.referenceType = 'PORTAL';
             break;
           default:
@@ -166,14 +163,6 @@ const NotificationSettingsComponent: ng.IComponentOptions = {
       return vm.selectedNotificationSetting.config_type === 'portal' ||
         (vm.selectedNotificationSetting.config && vm.selectedNotificationSetting.config !== '');
     };
-
-    vm.isActive = (notificationSetting) => {
-      if (!notificationSetting.id && !$state.params.notificationId) {
-        return true;
-      } else {
-        return notificationSetting.id === $state.params.notificationId;
-      }
-    }
   }
 };
 
