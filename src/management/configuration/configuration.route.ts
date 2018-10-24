@@ -16,7 +16,6 @@
 import ViewService from '../../services/view.service';
 import TenantService from '../../services/tenant.service';
 import TagService from '../../services/tag.service';
-import PortalPagesService from '../../services/portalPages.service';
 import MetadataService from "../../services/metadata.service";
 import RoleService from "../../services/role.service";
 import GroupService from "../../services/group.service";
@@ -28,6 +27,9 @@ import ApiService from "../../services/api.service";
 import DictionaryService from "../../services/dictionary.service";
 import ApiHeaderService from "../../services/apiHeader.service";
 import _ = require('lodash');
+import DocumentationService from "../../services/apiDocumentation.service";
+import FetcherService from "../../services/fetcher.service";
+import {StateParams} from '@uirouter/core';
 
 export default configurationRouterConfig;
 
@@ -187,7 +189,7 @@ function configurationRouterConfig($stateProvider) {
       url: '/pages',
       component: 'portalPages',
       resolve: {
-        pages: (PortalPagesService: PortalPagesService) => PortalPagesService.list().then(response => response.data),
+        pages: (DocumentationService: DocumentationService) => DocumentationService.list().then(response => response.data),
         resolvedGroups: (GroupService: GroupService) => {
           return GroupService.list().then(response => {
             return response.data;
@@ -201,6 +203,77 @@ function configurationRouterConfig($stateProvider) {
         },
         perms: {
           only: ['portal-documentation-r']
+        }
+      }
+    })
+    .state('management.settings.documentation', {
+      url: '/pages2',
+      component: 'documentationManagement',
+      resolve: {
+        resolvedPages: (DocumentationService: DocumentationService) => DocumentationService.list().then(response => response.data),
+        resolvedGroups: (GroupService: GroupService) => {
+          return GroupService.list().then(response => {
+            return response.data;
+          });
+        },
+      },
+      data: {
+        menu: null,
+        docs: {
+          page: 'management-configuration-portal-pages'
+        },
+        perms: {
+          only: ['portal-documentation-r']
+        }
+      }
+    })
+    .state('management.settings.newdocumentation', {
+      url: '/pages2/new2?:type',
+      component: 'newPage',
+      resolve: {
+        resolvedFetchers: (FetcherService: FetcherService) => {
+          return FetcherService.list().then(response => {
+            return response.data;
+          })
+        }
+      },
+      data: {
+        menu: null,
+        perms: {
+          only: ['portal-documentation-c']
+        }
+      },
+      params: {
+        type: {
+          type: 'string',
+          value: '',
+          squash: false
+        }
+      }
+    })
+    .state('management.settings.editdocumentation', {
+      url: '/pages2/:pageId',
+      component: 'editPage',
+      resolve: {
+        resolvedPage: (DocumentationService: DocumentationService, $stateParams: StateParams) =>
+          DocumentationService.get2($stateParams.pageId).then(response => response.data),
+        resolvedGroups: (GroupService: GroupService) => {
+          return GroupService.list().then(response => {
+            return response.data;
+          });
+        },
+      },
+      data: {
+        menu: null,
+        perms: {
+          only: ['portal-documentation-u']
+        }
+      },
+      params: {
+        pageId: {
+          type: 'string',
+          value: '',
+          squash: false
         }
       }
     })

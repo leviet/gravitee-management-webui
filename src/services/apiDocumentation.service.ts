@@ -1,3 +1,5 @@
+import {IHttpPromise} from "angular";
+
 /*
  * Copyright (C) 2015 The Gravitee team (http://gravitee.io)
  *
@@ -14,26 +16,63 @@
  * limitations under the License.
  */
 class DocumentationService {
-  private documentationURL: (apiId: string) => string;
   private folderPromise;
 
-  constructor(private $http, private $q, Constants) {
+  constructor(
+    private $http: ng.IHttpService,
+    private $q: ng.IQService,
+    private Constants: any) {
     'ngInject';
-    this.documentationURL = apiId => `${Constants.baseURL}apis/${apiId}/pages/`;
   }
 
-  list(apiId) {
-    return this.$http.get(this.documentationURL(apiId));
+  url = (apiId: string, pageId?: string): string => {
+    if (apiId) {
+      return `${this.Constants.baseURL}apis/${apiId}/pages/` + (pageId ? pageId : '');
+    }
+    return `${this.Constants.baseURL}portal/pages/` + (pageId ? pageId : '');
+
+  };
+
+  supportedTypes = (): string[] => {
+    return ["SWAGGER", "MARKDOWN", "FOLDER"]
+  };
+
+  partialUpdate = (propKey: string, propValue: any, pageId: string, apiId?: string): IHttpPromise<any> => {
+    let prop = {};
+    prop[propKey] = propValue;
+    return this.$http.patch(this.url(apiId, pageId), prop);
+  };
+
+
+  list = (apiId?: string): IHttpPromise<any> => {
+    return this.$http.get(this.url(apiId));
+  };
+
+  remove = (pageId: string, apiId?: string): IHttpPromise<any> => {
+    return this.$http.delete(this.url(apiId, pageId));
+  };
+
+  get2(pageId: string, apiId?: string): IHttpPromise<any> {
+    return this.$http.get(this.url(apiId, pageId));
   }
+
+  create(newPage: any, apiId?: string): IHttpPromise<any> {
+    return this.$http.post(this.url(apiId), newPage);
+  }
+
+
+
+
+
 
   fullList(apiId) {
     const deferredFolders = this.$q.defer();
     this.folderPromise = deferredFolders.promise;
 
-    return this.$http.get(this.documentationURL(apiId), {params: {"flatMode": true}})
+    return this.$http.get(this.url(apiId), {params: {"flatMode": true}})
       .then(response => {
 
-        let pages = response.data;
+        let pages = <any[]>response.data;
 
         const map = new Map<string, string>();
         pages.forEach(p => {
@@ -54,7 +93,7 @@ class DocumentationService {
 
   get(apiId: string, pageId?: string, portal?: boolean) {
     if (pageId) {
-      return this.$http.get(this.documentationURL(apiId) + pageId + (portal !== undefined?'?portal=' + portal:''));
+      return this.$http.get(this.url(apiId, pageId) + (portal !== undefined?'?portal=' + portal:''));
     }
   }
 
@@ -62,9 +101,9 @@ class DocumentationService {
     let deferred = this.$q.defer();
     let that = this;
     this.$http
-      .get(this.documentationURL(apiId), {params:{"homepage": true}})
+      .get(this.url(apiId), {params:{"homepage": true}})
       .then(function(response) {
-        if (response.data.length > 0) {
+        if ((<any[]>response.data).length > 0) {
           that
             .get(apiId, response.data[0].id, true)
             .then(response => deferred.resolve(response));
@@ -79,23 +118,23 @@ class DocumentationService {
 
   listApiPages(apiId: string) {
     return this.$http
-      .get(this.documentationURL(apiId), {params:{"homepage": false}})
+      .get(this.url(apiId), {params:{"homepage": false}})
   }
 
   getContentUrl(apiId, pageId) {
-    return this.documentationURL(apiId) + pageId + '/content';
+    return this.url(apiId, pageId) + '/content';
   }
 
   createPage(apiId, newPage) {
-    return this.$http.post(this.documentationURL(apiId), newPage);
+    return this.$http.post(this.url(apiId), newPage);
   }
 
   deletePage(apiId, pageId) {
-    return this.$http.delete(this.documentationURL(apiId) + pageId);
+    return this.$http.delete(this.url(apiId, pageId));
   }
 
   editPage(apiId, pageId, editPage) {
-    return this.$http.put(this.documentationURL(apiId) + pageId,
+    return this.$http.put(this.url(apiId, pageId),
       {
         name: editPage.name,
         description: editPage.description,

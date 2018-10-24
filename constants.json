@@ -1,3 +1,16 @@
 {
-  "baseURL": "/management/"
+  "baseURL": "/management/",
+  "authentication" : {
+    "forceLogin" : {
+      "enabled" : "true"
+    },
+    "oauth2": {
+      "clientId": "apimanagement",
+      "name": "Decathlon",
+      "color": "#0076b4",
+      "authorizationEndpoint": "https://preprod.idpdecathlon.oxylane.com/as/authorization.oauth2",
+      "userLogoutEndpoint": "https://preprod.idpdecathlon.oxylane.com/ext/logout",
+      "scope": ["profile", "openid"]
+    }
+  }
 }

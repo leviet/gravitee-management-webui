@@ -33,6 +33,10 @@
                     <a class="execute" ui-sref="{{$ctrl.settingsMenu.documentations.goTo}}">Documentation</a>
                 </li>
                 <li class="iterable-item" ui-sref-active="aui-nav-selected"
+                    ng-if="$ctrl.settingsMenu.documentations2.perm">
+                    <a class="execute" ui-sref="{{$ctrl.settingsMenu.documentations2.goTo}}">Documentation</a>
+                </li>
+                <li class="iterable-item" ui-sref-active="aui-nav-selected"
                     ng-if="$ctrl.settingsMenu.metadata.perm">
                     <a class="execute" ui-sref="{{$ctrl.settingsMenu.metadata.goTo}}">Metadata</a>
                 </li>

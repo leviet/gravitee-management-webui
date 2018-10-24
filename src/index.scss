@@ -25,7 +25,7 @@ $backgroundColor: rgb(45, 50, 62);
 @import 'components/widget/widget';
 @import 'management/instances/instances';
 @import 'management/platform/dashboard/dashboard';
-@import 'components/documentation/page';
+@import 'components/documentation/page/page';
 @import 'components/contextual/contextual-doc.component';
 @import 'management/tasks/tasks';
 @import 'management/portalnotifications/portalnotifications';
@@ -548,4 +548,13 @@ table {
   min-width: 0;
   min-height: 0;
   fill: rgba(0, 0, 0, 0.54);
+}
+
+ng-md-icon {
+  fill: rgba(0, 0, 0, 0.54);
+}
+.md-fab {
+  ng-md-icon {
+    fill: #fff;
+  }
 }

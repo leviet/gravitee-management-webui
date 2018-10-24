@@ -15,24 +15,36 @@
     limitations under the License.
 
 -->
-<div layout="row">
-  <md-list ng-if="listPagesDisplayed" layout="column" class="inset pages" flex="20">
-    <md-item ng-repeat="page in $ctrl.pages">
-      <md-item-content layout="row" layout-align="start center" ui-sref="management.settings.pages.page({pageId: page.id})">
-        <md-button class="gravitee-api-page-menu-item"
-                   ng-class="{'selected' : page.id === $ctrl.$state.params.pageId }">
-          <div class="inset">
-            <md-icon md-svg-src="assets/logo_{{page.type | lowercase}}.svg"></md-icon>
-            <span ng-style="page.published?'':{'font-style': 'italic', 'color': 'grey'}">{{page.name}}
+<div class="gv-forms" layout="column">
+  <h1>Documentation</h1>
+  <div class="gv-form">
+    <h2></h2>
+    <div class="gv-form-content" layout="column">
+      <md-list ng-if="listPagesDisplayed" layout="column" class="inset pages">
+        <md-item ng-repeat="page in $ctrl.pages" class="gravitee-api-page-menu-item">
+          <md-item-content layout="row" layout-align="space-between center" ui-sref="management.settings.pages.page({pageId: page.id})">
+            <div ng-class="{'selected' : page.id === $ctrl.$state.params.pageId }">
+              <md-icon md-svg-src="assets/logo_{{page.type | lowercase}}.svg" ></md-icon>
+              <span ng-style="page.published?'':{'font-style': 'italic', 'color': 'grey'}">{{page.name}}
                 <sup ng-if="page.homepage" class="icon-button-homepage">
                   <ng-md-icon icon="home" size="12"></ng-md-icon>
                 </sup>
               </span>
-          </div>
-        </md-button>
-      </md-item-content>
-    </md-item>
-  </md-list>
+            </div>
+            <div>
+              <a>unpublish</a>
+            </div>
+          </md-item-content>
+        </md-item>
+      </md-list>
+    </div>
+  </div>
+</div>
+
+
+<div layout="row">
+
+  <div flex ="30"></div>
   <div flex ui-view></div>
 </div>
 
