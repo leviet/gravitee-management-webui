@@ -34,12 +34,13 @@
     </div>
     <div flex="85" layout="column">
       <div layout="row" layout-align="center center">
-        <h5 class="gravitee-view-description" ng-if="apisCtrl.view && apisCtrl.view.description && !apisCtrl.hideApis">
+        <h5 class="gravitee-view-description" ng-if="apisCtrl.view && apisCtrl.view.description && !apisCtrl.apisLoading">
           {{apisCtrl.view.description}}
         </h5>
       </div>
       <div layout="row" layout-align="center center">
-        <md-content ng-show="!apisCtrl.hideApis"
+        <md-progress-circular ng-if="apisCtrl.apisLoading" md-mode="indeterminate" style="display: inline; top: 100px;"></md-progress-circular>
+        <md-content ng-show="!apisCtrl.apisLoading"
                     layout="row" layout-align="start start"
                     layout-wrap
                     class="api-gallery">
